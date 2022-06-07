@@ -1,11 +1,15 @@
 package de.pamLights.lakehydrant;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -13,8 +17,11 @@ import androidx.core.content.ContextCompat;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.cachemanager.CacheManager;
+import org.osmdroid.tileprovider.modules.SqliteArchiveTileWriter;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
@@ -29,6 +36,11 @@ public class HydrantMap extends AppCompatActivity {
   private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
   private MapView map = null;
 
+  CacheManager cacheMgr = null;
+  AlertDialog downloadPrompt = null;
+  AlertDialog alertDialog = null;
+  SqliteArchiveTileWriter sqlWriter = null;
+
   @Override
     protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -41,9 +53,9 @@ public class HydrantMap extends AppCompatActivity {
     map = (MapView) findViewById(R.id.osmMap);
     map.setTileSource(TileSourceFactory.MAPNIK);
 
-    map.setBuiltInZoomControls(true);
+    map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
     map.setMultiTouchControls(true);
-    map.setMaxZoomLevel(23.0);
+    map.setMaxZoomLevel(22.0);
     map.setMinZoomLevel(10.0);
 
     IMapController mapController = map.getController();
